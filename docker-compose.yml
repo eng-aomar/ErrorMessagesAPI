@@ -11,7 +11,8 @@ services:
       MongoDB__Host: mongo
     depends_on:
       - mongo
-
+    networks:
+      - error-messgeapi-network
   mongo:
     image: mongo
     container_name: mongo
@@ -24,6 +25,8 @@ services:
     volumes:
      #- mongo-data:/data/db
      - ./mongo/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
+    networks:
+      - error-messgeapi-network
 
   mongo-express:
     image: mongo-express
@@ -33,6 +36,11 @@ services:
       - 8081:8081
     depends_on:
       - mongo
+    networks:
+      - error-messgeapi-network
 volumes:
   mongo-data:
     driver: local
+networks:
+  error-messgeapi-network:
+    driver: bridge
