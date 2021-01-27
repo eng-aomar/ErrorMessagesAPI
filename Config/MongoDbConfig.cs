@@ -1,5 +1,7 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Hosting;
+using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -20,6 +22,9 @@ namespace ErrorMessagesAPI.Config
                     return $@"mongodb://{Host}:{Port}";
 
                 return $@"mongodb://{User}:{Password}@{Host}:{Port}/{Database}";
+               // IWebHostEnvironment x = x.(ConnectionString);
+                //return  GetEnvironment.GetEnvironmentVariable("ConnectionString", EnvironmentVariableTarget.Process);
+               // return $@"mongodb://{User}:{Password}@{Host}:{Port}/{Database}";
             }
         }
     }

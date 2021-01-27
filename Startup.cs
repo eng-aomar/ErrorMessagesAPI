@@ -43,12 +43,12 @@ namespace ErrorMessagesAPI
             {
                 c.SwaggerDoc("v1", new OpenApiInfo
                 {
-                    Title = "Messages API",
+                    Title = "Error Messages API",
                     Version = "v1",
-                    Description = "Description for the API goes here.",
+                    Description = "This is an Errr message api descrption",
                     Contact = new OpenApiContact
                     {
-                        Name = "Alaa omar",
+                        Name = "SRA Team",
                         Email = string.Empty
                        
                     },
