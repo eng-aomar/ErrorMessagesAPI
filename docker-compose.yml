@@ -9,7 +9,7 @@ services:
       dockerfile: Dockerfile
     environment:
       MongoDB__URL: ${ConnectionString}
-      Mongo_DB: ${MongoDB}
+      Mongo_DB: ${DB_Name}
     depends_on:
       - mongo
     networks:
