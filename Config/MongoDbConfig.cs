@@ -9,7 +9,15 @@ namespace ErrorMessagesAPI.Config
 {
     public class MongoDBConfig
     {
-        public string Database { get; set; }
+        public string Database
+        {
+            get
+            {
+
+                return Environment.GetEnvironmentVariable("Mongo_DB");
+
+            }
+        }
         public string Host { get; set; }
         public int Port { get; set; }
         public string User { get; set; }
@@ -18,13 +26,9 @@ namespace ErrorMessagesAPI.Config
         {
             get
             {
-                if (string.IsNullOrEmpty(User) || string.IsNullOrEmpty(Password))
-                    return $@"mongodb://{Host}:{Port}";
+                
+               return  Environment.GetEnvironmentVariable("MongoDB__URL");
 
-                return $@"mongodb://{User}:{Password}@{Host}:{Port}/{Database}";
-               // IWebHostEnvironment x = x.(ConnectionString);
-                //return  GetEnvironment.GetEnvironmentVariable("ConnectionString", EnvironmentVariableTarget.Process);
-               // return $@"mongodb://{User}:{Password}@{Host}:{Port}/{Database}";
             }
         }
     }

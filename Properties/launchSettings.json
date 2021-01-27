@@ -14,8 +14,8 @@
       "launchBrowser": true,
       "launchUrl": "api/messages",
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development",
-        "ConnectionString": "mongodb://root:example@mongo:27017/admin"
+        "ASPNETCORE_ENVIRONMENT": "Development"
+
       }
     },
     "ErrorMessagesAPI": {
@@ -23,8 +23,7 @@
       "launchBrowser": true,
       "launchUrl": "api/messages",
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development",
-        "ConnectionString": "mongodb://root:example@mongo:27017/admin"
+        "ASPNETCORE_ENVIRONMENT": "Development"
       },
       "applicationUrl": "https://localhost:5001;http://localhost:5000"
     },
@@ -33,7 +32,6 @@
       "launchBrowser": true,
       "launchUrl": "{Scheme}://{ServiceHost}:{ServicePort}/api/messages",
       "environmentVariables": {
-        "ConnectionString": "mongodb://root:example@mongo:27017/admin"
       },
       "publishAllPorts": true,
       "useSSL": true

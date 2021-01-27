@@ -8,7 +8,8 @@ services:
       context: .
       dockerfile: Dockerfile
     environment:
-      MongoDB__Host: mongo
+      MongoDB__URL: ${ConnectionString}
+      Mongo_DB: ${MongoDB}
     depends_on:
       - mongo
     networks:
