@@ -42,18 +42,24 @@ spec:
             cpu: 500m
             memory: 128Mi
         env:
-        - name: MongoDB__URL
+        - name: Host
           valueFrom:
             secretKeyRef:
-              name: messageapi-secret
-              key: MongoDB__URL
-        - name: Mongo_DB
+              name: mongo-configmap
+              key: database_url
+        - name: username
           valueFrom: 
             secretKeyRef:
-              name: messageapi-secret
-              key: Mongo_DB   
-        - name: ME_CONFIG_MONGODB_SERVER
+              name: mongo-secret
+              key: mongo-root-username   
+        - name: password
           valueFrom: 
-            configMapKeyRef:
-              name: mongodb-configmap
-              key: database_url              
+            secretKeyRef:
+              name: mongo-secret
+              key: mongo-root-password 
+        - name: database
+          valueFrom: 
+            secretKeyRef:
+              name: mongo-secret
+              key: mongo-root-database 
+         
