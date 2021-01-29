@@ -201,10 +201,10 @@ Applying this factor ensures that every service is completely portable and loose
 *Strictly separate build and run stages*. <br />
 
 Build / Release and Run phases must be kept separated.
-In order to transform our codebase to a deploy, we should pass 3 stages: 
-1- *Build stage*, where the code repo is converted to an executable bundle called **build**. In this stage, adll dependencies are fetched and the binaries files are complied.
-2- *Release stage*, where we combines the build produced in the previous stage, with the deploy config. Therefore, ready to be executed. Note that each release must have a unique ID, and using the release management tools we can rollback to previous releases.R
-3- *Run stage*, where we run the application in the execution environment.
+In order to transform our codebase to a deploy, we should pass 3 stages: </br>
+1- *Build stage*, where the code repo is converted to an executable bundle called **build**. In this stage, adll dependencies are fetched and the binaries files are complied. </br>
+2- *Release stage*, where we combines the build produced in the previous stage, with the deploy config. Therefore, ready to be executed. Note that each release must have a unique ID, and using the release management tools we can rollback to previous releases. </br>
+3- *Run stage*, where we run the application in the execution environment.</br>
 
 A release is deployed on the execution environment and must be immutable.
 
