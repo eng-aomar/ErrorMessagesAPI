@@ -172,9 +172,7 @@ Package Restore first installs the direct dependencies of a project as needed, t
 *Store config in the environment*. <br />
 
 The application configuration is everything that vary among deploys. These configurations should be separated from the application code. 
-According to our application, the database connection string is considered a configuration and should be separated from the code, so we store that string in the user environment under the name of "ConnectioString", and we access that string from the code using this line of code:
-
-## Environmental Variables:
+According to our application, the database connection string is considered a configuration and should be separated from the code, so we store that string in the user environment under the name of "ConnectioString", we also store the name of the database in an environmental variable... Below are the environment variables of our API
 
 ### Environmental Variables for the Error Message API
 
