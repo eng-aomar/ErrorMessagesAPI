@@ -44,22 +44,22 @@ spec:
         env:
         - name: Host
           valueFrom:
-            secretKeyRef:
-              name: mongo-configmap
+            configMapKeyRef:
+              name: mongodb-configmap
               key: database_url
         - name: username
           valueFrom: 
             secretKeyRef:
-              name: mongo-secret
+              name: mongodb-secret
               key: mongo-root-username   
         - name: password
           valueFrom: 
             secretKeyRef:
-              name: mongo-secret
+              name: mongodb-secret
               key: mongo-root-password 
         - name: database
           valueFrom: 
             secretKeyRef:
-              name: mongo-secret
+              name: mongodb-secret
               key: mongo-root-database 
          
