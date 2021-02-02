@@ -14,9 +14,10 @@ The API is built using the *APS.NET core*, The main domain of this API is to pro
 # System Requirments:
 
 All you need to run this API is a 
-### Microsoft Visual Studio Community 2019
-### Docker Desktop to run Mongo Docker
-### Local Minikube installed
++ Microsoft Visual Studio Community 2019
++ Docker Desktop to run Mongo Docker
++ Local Minikube installed
++ Mongo Database image
 
 # API Methods:
 
@@ -124,20 +125,13 @@ Push the branch on github :
 $ git push origin [name_of_your_new_branch]
 ```
 
-# API Specification & Testing: 
-In our API we used the [Swagger OpenAPI](https://swagger.io/) for documentation. 
-**Swagger** is used together with a set of open-source software tools to design, build, document, and use RESTful web services.
 
-In order to view the documentation of our API, you are supposed to run the project and go to this link:
-*https://localhost:5001/swagger*
-
-<sub>Note: The port number may be different in your run.</sub>
-
-![swagger](https://user-images.githubusercontent.com/55650010/100859067-773b1980-3497-11eb-86ee-260f1d881528.png)
 
 # Context Diagram
 A system context diagram (SCD) in engineering is a high level view of a system that defines the boundary between the system, or part of a system, and its environment, showing the entities that interact with it.
 <img src="https://user-images.githubusercontent.com/55021862/100797714-402f1e80-342b-11eb-8e30-ab00c8866afe.png" width="800" height="600"></img>
+
+---
 # 1 - Codebase
 *One codebase tracked in revision control, many deploys*. <br />
 
@@ -148,7 +142,7 @@ In this repository two branches have been created:
 2. **dev** branch for the development.
 The source code has been tracked using the Github platform, and every team member contributes using pull requests
 mechanism. 
-
+---
 # 2 - Dependencies
 *Explicitly declare and isolate dependencies*. <br />
 
@@ -169,6 +163,7 @@ Visual Studio can restore packages automatically when it builds a project, and y
 nuget restore
 ```
 Package Restore first installs the direct dependencies of a project as needed, then installs any dependencies of those packages throughout the entire dependency graph.
+---
 # 3 - Configuration
 *Store config in the environment*. <br />
 
@@ -177,19 +172,34 @@ According to our application, the database connection string is considered a con
 
 ### Environmental Variables for the Error Message API
 
-In the Docker Compose file, under the environment, two variables are defined (MongoDB__URL, Mongo_DB), the values of the two varaibles are stored in the OS environmental Variables.
+In the Docker Compose file, under the environment, four variables are defined (Host, MONGO_ROOT_USER, MONGO_ROOT_PASSWORD, DB_Name), the values of the four varaibles are stored in the user environmental Variables.
 
+#### ErrorMessage API
 ```
     environment:
-      MongoDB__URL: ${ConnectionString}
-      Mongo_DB: ${DB_Name}
+      Host: ${Host}
+      username: ${MONGO_ROOT_USER}
+      password: ${MONGO_ROOT_PASSWORD}
+      database: ${DB_Name}
 ```
-Besides, the Mongo database credentials are stored in the docker compose file such as the following:
+The four env. variables are read in code to consturct the URL of the mongo database in the Class Name [MongoDbConfig.cs](https://github.com/eng-aomar/ErrorMessagesAPI/blob/master/Config/MongoDbConfig.cs)
+Besides, the Mongo database and the mongo express credentials are stored in the docker compose file such as the following:
+#### Mongo Env Varaibles
 ```
 environment:
       MONGO_INITDB_ROOT_USERNAME: ${MONGO_ROOT_USER}
       MONGO_INITDB_ROOT_PASSWORD: ${MONGO_ROOT_PASSWORD}
 ```
+#### Mongo Express Env Varaibles
+```
+    environment:
+      ME_CONFIG_MONGODB_ADMINUSERNAME: ${MONGO_ROOT_USER}
+      ME_CONFIG_MONGODB_ADMINPASSWORD: ${MONGO_ROOT_PASSWORD}
+```
+
+In K8s, the configeration is satisied by using secert file to store the base64 encrypted passwords [Mongo-Sercert](https://github.com/eng-aomar/ErrorMessagesAPI/blob/master/k8s/mongo-secret.yml)
+
+---
 # 4 - Backing services
 *Treat backing services as attached resources*. <br />
 
@@ -197,7 +207,7 @@ Anything external to a service is treated as an attached resource, including oth
 In our case, MongoDB is considered a backing service, that can be accessed using the credentials stored in the config file (see factor #3).
 Applying this factor ensures that every service is completely portable and loosely coupled to the other resources in the system.  Strict separation increases flexibility during development, developers only need to run the services they are modifying, not others.  A database (Mongo DB) should be referenced by a simple endpoint (URL) and credentials, if necessary. 
 
-
+---
 # 5 - Build / Release / Run
 *Strictly separate build and run stages*. <br />
 
@@ -206,6 +216,8 @@ In order to transform our codebase to a deploy, we should pass 3 stages: </br>
 1- *Build stage*, where the code repo is converted to an executable bundle called **build**. In this stage, adll dependencies are fetched and the binaries files are complied. </br>
 2- *Release stage*, where we combines the build produced in the previous stage, with the deploy config. Therefore, ready to be executed. Note that each release must have a unique ID, and using the release management tools we can rollback to previous releases. </br>
 3- *Run stage*, where we run the application in the execution environment.</br>
+
+The Whole pipline is automated using GitHub Actios By Buliding a [continous integration](https://github.com/eng-aomar/ErrorMessagesAPI/blob/master/.github/workflows/CI.yml), and a [continous delivery](https://github.com/eng-aomar/ErrorMessagesAPI/blob/master/.github/workflows/CD.yml) for our API.
 
 A release is deployed on the execution environment and must be immutable.
 
@@ -304,8 +316,10 @@ services:
       context: .
       dockerfile: Dockerfile
     environment:
-      MongoDB__URL: ${ConnectionString}
-      Mongo_DB: ${DB_Name}
+      Host: ${Host}
+      username: ${MONGO_ROOT_USER}
+      password: ${MONGO_ROOT_PASSWORD}
+      database: ${DB_Name}
     depends_on:
       - mongo
     networks:
@@ -319,9 +333,11 @@ services:
     environment:
       MONGO_INITDB_ROOT_USERNAME: ${MONGO_ROOT_USER}
       MONGO_INITDB_ROOT_PASSWORD: ${MONGO_ROOT_PASSWORD}
+      MONGO_INITDB_DATABASE: ${DB_Name}
     volumes:
       - mongo-data:/data/db
-     #- ./mongo/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
+      - ./initmongo.js:/docker-entrypoint-initdb.d/initmongo.js:ro
+
     networks:
       - error-messgeapi-network
 
@@ -330,7 +346,10 @@ services:
     container_name: mongo-express
     restart: always
     ports:
-      - 8081:8081
+      - '8081:8081'
+    environment:
+      ME_CONFIG_MONGODB_ADMINUSERNAME: ${MONGO_ROOT_USER}
+      ME_CONFIG_MONGODB_ADMINPASSWORD: ${MONGO_ROOT_PASSWORD}
     depends_on:
       - mongo
     networks:
@@ -342,6 +361,7 @@ networks:
   error-messgeapi-network:
     driver: bridge
 ```
+
 In the Dockor-Compose we connect three images ( MessagAPI, Mongo, Mongo-express). Docker compose creat the defualt network between the images. Regarding the mongo image, we define the mongo-data volume locally inside the conatiner to presist the data. The Mongo-express is used to provide a simple interface to the mongo database.  Mongo-express can be accessed using the following url (http://localhost:8081/). By defualt mongo database has alreday three pre-defined databases as the picture shows. We add messagedb database and Message collection to it.
 ![mongo-express](https://user-images.githubusercontent.com/55650010/100858792-1c092700-3497-11eb-9e8e-a9f280afb10c.png)
 
@@ -449,63 +469,26 @@ minikube dashboard
 ```
 Now we can interact with our cluster using the **"Kubectl"**
 
-### Deploy Conatiner to K8s:
-To deploy to k8s, we created a service and a depolyment configration yml file.
+### Deploy Conatiners to K8s:
 
-  ```
-  apiVersion: v1
-kind: Service
-metadata:
-  name: errormessage-api-service
-  namespace: default
-spec:
-  selector:
-    app: error-messagepi-pod
-  ports:
-    - protocol: TCP
-      port: 8080
-      targetPort: 80
-  type: LoadBalancer 
+To deploy to k8s, we created:
+- Four deployemts.  
+- One configmap.
+- One secert file.
 
----
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: errormessage-api-deployment
-  namespace: default
-  labels:
-    app: error-messagepi-pod
-spec:
-  replicas: 2
-  selector:
-    matchLabels:
-      app: error-messagepi-pod
-  template:
-    metadata:
-      labels:
-        app: error-messagepi-pod
-    spec:
-      containers:
-      - name: errormessageapi-container
-        image: sradockerization/errormessageapi:latest
-        imagePullPolicy: IfNotPresent   
-        resources:
-          requests:
-            cpu: 100m
-            memory: 128Mi
-          limits:
-            cpu: 500m
-            memory: 128Mi
-  ```
-
+  #### To show the yaml files please [click here](https://github.com/eng-aomar/ErrorMessagesAPI/tree/master/k8s).
 
  
  ![image](https://user-images.githubusercontent.com/55650010/105977832-82c34f00-609a-11eb-9df8-24f9424bc07d.png)
  
- To deploy the image to kubernetes, the following command is used:
- 
+ To deploy the image to kubernetes, the commands [found here](https://github.com/eng-aomar/ErrorMessagesAPI/blob/master/k8s/k8s-commands.md)
+ are executed in order.
 ```
-kubectl apply -f .\k8s\error_message_api_deployement.yml
+kubectl apply -f mongo-secret.yml
+kubectl apply -f mongo.yml
+kubectl apply -f mongo-configmap.yml 
+kubectl apply -f mongo-express.yml
+kubectl apply -f error-message-api-deployment.yml
 ```
 
 The following are the service, deployment and pods of our deployed image
@@ -527,11 +510,15 @@ deployment.apps/errormessage-api-deployment   2/2     2            2           3
 NAME                                                     DESIRED   CURRENT   READY   AGE
 replicaset.apps/errormessage-api-deployment-5cf9674f8f   2         2         2       23h
 ```
+---
 # 6- Processes
 *Execute the app as one or more stateless processes*. <br />
 Every meaningful business application creates, modifies, or uses data. In IT, a synonym for data is state. An application service that creates or modifies persistent data is called **stateful component**. In general, database services are stateful component. On the other hand, application components that do not create or modify persistent data are called **stateless components**.
 Stateless components are *easier* and *simpler* to handle and can be easily scaled-up and down compared with stateful components. Moreover, they can easily restarted on a completely different node because they have no persistent data associated with them. 
+ 
+#### Error Messsage API is a statless application as we don't store data inside our API, we use backing services [mongo database] to store our data.
 
+---
 # 7- Port Binding
 *Export services via port binding*. <br />
 This factor talks about exposing the application services to the outside world using port binding.
@@ -539,6 +526,10 @@ In general, docker containers can connect to the outside world without further c
 In our DockerFile, we put the **Expose 80** command (we can put any port number), this tells Docker that our container’s service can be connected to on port 80.
 **Note**: The ports are configured with the "HOST_PORT:CONTAINER_PORT" syntax.
 
+#### In our API, Port binding is satisfied using both Docker-Compose file and K8S YAML (deployment, service) files, as the service of each application forwards the traffic to the specified port
+using Target port, that points to the container port.
+
+---
 # 8- Concurrency
 *Scale out via the process model*. <br />
 
@@ -557,12 +548,15 @@ For more details, you can click [here]: {https://pspdfkit.com/blog/2018/how-to-u
 
 Moreover, Kubernetes also allows us to scale the stateless application at runtime by defining the **ReplicaSet**, where it automatically scale the number of pods with that number.
 
+---
 # 9- Disposability
 *Maximize robustness with fast startup and graceful shutdown*. <br />
 The different instances of our application are disposable, which means that they can started or stopped at any moment. This actually facilitate the scalability and deployment for the application.
-This is achieved in out application when we use **volumes**, storing long-term persistent data outside the container (in an external-to-Docker database, in Docker volumes) means that we can desdtriy any container without affecting the user experienceز
+This is achieved in out application when we use **volumes**, storing long-term persistent data outside the container (in an external-to-Docker database, in Docker volumes) means that we can desdtriy any container without affecting the user experience.
 
+Pods in K8S are considered stateless ephemeral objects, they can be stopped, started, and deleted gracefully, without the knowledge of the end-users.
 
+---
 # 10- Dev/prod parity
 *Keep development, staging, and production as similar as possible.*
 
@@ -576,6 +570,7 @@ What does that mean for our Application?
 WE use  continuous deployment to minimize the gap between deveoplment and production, by pushing the docker image continously into docker hub on push and pull reguest of the 
 master branch.
 
+---
 # 11- Logs
 *Treat logs as event streams*.  </br>
 Logs are the stream of aggregated, time-ordered events collected from the output streams of all **running processes and backing services.**
@@ -583,5 +578,24 @@ Logs are the stream of aggregated, time-ordered events collected from the output
 The ```docker logs [OPTIONS] CONTAINER_NAME``` command shows information logged by a running container.
 For more details you can read [this article] {https://docs.docker.com/engine/reference/commandline/logs/}
 
+---
 # 12- Admin processes
 *Run admin/management tasks as one-off processes.*
+In our case we stored the TAML files for both kubernetes and docker-compose ready to deploy our apps in any envionment in the same repostory.
+You can find all needed YAML files in the following folder [k8s](https://github.com/eng-aomar/ErrorMessagesAPI/tree/master/k8s)
+
+---
+# 13- Open API Spesification:
+
+In our API we used the [Swagger OpenAPI](https://swagger.io/) for documentation. 
+**Swagger** is used together with a set of open-source software tools to design, build, document, and use RESTful web services.
+
+We integrate our dotnet cor api with swagger using the following code in [startup.cs](https://github.com/eng-aomar/ErrorMessagesAPI/blob/master/Startup.cs)
+
+In order to view the documentation of our API, you are supposed to run the project and go to this link:
+*https://localhost:5001/swagger*
+
+<sub>Note: The port number may be different in your run.</sub>
+
+![swagger](https://user-images.githubusercontent.com/55650010/100859067-773b1980-3497-11eb-86ee-260f1d881528.png)
+
