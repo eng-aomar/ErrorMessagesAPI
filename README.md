@@ -16,6 +16,7 @@ The API is built using the *APS.NET core*, The main domain of this API is to pro
 All you need to run this API is a 
 ### Microsoft Visual Studio Community 2019
 ### Docker Desktop to run Mongo Docker
+### Local Minikube installed
 
 # API Methods:
 
