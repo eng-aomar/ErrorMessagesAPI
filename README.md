@@ -1,4 +1,4 @@
-# Welcome to The ErrorMessagesAPI Project
+# Welcome To The ErrorMessagesAPI Web API
 Nowadays, many applications are depoloyed on the **cloud**, using the infrastructure of the cloud providers such like AWS, Google, OVH, etc.\
 **Heroku** is a Platform as a service (PaaS) that facilitates the applications deployment on the cloud.
 The working engineers in this company end up with 12 principles that should be done to 
