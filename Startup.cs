@@ -45,11 +45,11 @@ namespace ErrorMessagesAPI
                 {
                     Title = "Error Messages API",
                     Version = "v1",
-                    Description = "This is an Errr message api descrption",
+                    Description = "This is an Error message api descrption",
                     Contact = new OpenApiContact
                     {
-                        Name = "SRA Team",
-                        Email = string.Empty
+                        Name = "Alaa' Omar",
+                        Email ="alaa.omer2009@gmail.com"
                        
                     },
                 });
