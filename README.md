@@ -500,18 +500,26 @@ kubectl get all
 ```
 ```
 NAME                                               READY   STATUS    RESTARTS   AGE
-pod/errormessage-api-deployment-5cf9674f8f-s4l42   1/1     Running   0          23h
-pod/errormessage-api-deployment-5cf9674f8f-xbgmx   1/1     Running   0          23h
+pod/errormessage-api-deployment-658d79df9f-49c4m   1/1     Running   0          5d7h
+pod/errormessage-api-deployment-658d79df9f-npf7r   1/1     Running   0          5d7h
+pod/mongo-express-78fcf796b8-4cmvz                 1/1     Running   0          6d5h
+pod/mongodb-deployment-8f6675bc5-tnvgn             1/1     Running   0          6d5h
 
-NAME                               TYPE           CLUSTER-IP    EXTERNAL-IP   PORT(S)          AGE
-service/errormessage-api-service   LoadBalancer   10.96.73.70   localhost     8080:31402/TCP   3d20h
-service/kubernetes                 ClusterIP      10.96.0.1     <none>        443/TCP          24d
+NAME                               TYPE           CLUSTER-IP       EXTERNAL-IP   PORT(S)          AGE
+service/errormessage-api-service   LoadBalancer   10.108.119.117   <pending>     8080:31829/TCP   5d7h
+service/kubernetes                 ClusterIP      10.96.0.1        <none>        443/TCP          6d6h
+service/mongo-express-service      LoadBalancer   10.103.189.131   <pending>     8081:30000/TCP   6d5h
+service/mongodb-service            ClusterIP      10.98.52.19      <none>        27017/TCP        6d5h
 
 NAME                                          READY   UP-TO-DATE   AVAILABLE   AGE
-deployment.apps/errormessage-api-deployment   2/2     2            2           3d20h
+deployment.apps/errormessage-api-deployment   2/2     2            2           5d7h
+deployment.apps/mongo-express                 1/1     1            1           6d5h
+deployment.apps/mongodb-deployment            1/1     1            1           6d5h
 
 NAME                                                     DESIRED   CURRENT   READY   AGE
-replicaset.apps/errormessage-api-deployment-5cf9674f8f   2         2         2       23h
+replicaset.apps/errormessage-api-deployment-658d79df9f   2         2         2       5d7h
+replicaset.apps/mongo-express-78fcf796b8                 1         1         1       6d5h
+replicaset.apps/mongodb-deployment-8f6675bc5             1         1         1       6d5h
 ```
 ---
 # 6- Processes
