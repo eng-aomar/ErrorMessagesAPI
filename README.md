@@ -482,8 +482,7 @@ To deploy to k8s, we created:
 
   #### To show the yaml files please [click here](https://github.com/eng-aomar/ErrorMessagesAPI/tree/master/k8s).
 
- 
- ![image](https://user-images.githubusercontent.com/55650010/105977832-82c34f00-609a-11eb-9df8-24f9424bc07d.png)
+ ![image](https://user-images.githubusercontent.com/55650010/106785579-32c62880-6656-11eb-8975-a3a526bbc1b7.png)
  
  To deploy the image to kubernetes, the commands [found here](https://github.com/eng-aomar/ErrorMessagesAPI/blob/master/k8s/k8s-commands.md)
  are executed in order.
