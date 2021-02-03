@@ -577,10 +577,12 @@ master branch.
 ---
 # 11- Logs
 *Treat logs as event streams*.  </br>
-Logs are the stream of aggregated, time-ordered events collected from the output streams of all **running processes and backing services.**
 
-The ```docker logs [OPTIONS] CONTAINER_NAME``` command shows information logged by a running container.
-For more details you can read [this article] {https://docs.docker.com/engine/reference/commandline/logs/}
+![image](https://user-images.githubusercontent.com/55650010/106784093-a36c4580-6654-11eb-8614-f8efd5ef9aaf.png)
+
+To satisfy this factor, we are going to do logging at the node level on Kubernetes using [Fluend agent](https://docs.fluentd.org/v/0.12/), which is collects logging data from
+containers on that are running on k8s and unify all the logs then forwards them to a preferred destination such as elasticsearch, mongo database, Kafka, and others.
+    The Flunetd [github repository ](https://github.com/fluent/fluentd-kubernetes-daemonset) provides many templates, we implemented the [fluentd-daemonset-elasticsearch](https://github.com/fluent/fluentd-kubernetes-daemonset/blob/master/fluentd-daemonset-elasticsearch.yaml) to define the logging mecanism.
 
 ---
 # 12- Admin processes
