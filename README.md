@@ -589,7 +589,7 @@ master branch.
 
 To satisfy this factor, we are going to do logging at the node level on Kubernetes using [Fluend agent](https://docs.fluentd.org/v/0.12/), which is collects logging data from
 containers on that are running on k8s and unify all the logs then forwards them to a preferred destination such as elasticsearch, mongo database, Kafka, and others.
-    The Flunetd [github repository ](https://github.com/fluent/fluentd-kubernetes-daemonset) provides many templates, we implemented the [fluentd-daemonset-elasticsearch](https://github.com/fluent/fluentd-kubernetes-daemonset/blob/master/fluentd-daemonset-elasticsearch.yaml) to define the logging mecanism.
+    The Flunetd [github repository ](https://github.com/fluent/fluentd-kubernetes-daemonset) provides many templates, we implemented the [fluentd-daemonset-elasticsearch](https://github.com/fluent/fluentd-kubernetes-daemonset/blob/master/fluentd-daemonset-elasticsearch.yaml) to define the logging mechanism.
 
 ---
 # 12- Admin processes
