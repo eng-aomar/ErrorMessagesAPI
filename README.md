@@ -472,6 +472,9 @@ Now we can interact with our cluster using the **"Kubectl"**
 
 ### Deploy Conatiners to K8s:
 
+![k8s](https://user-images.githubusercontent.com/55650010/106782711-2a202300-6653-11eb-9f08-82f3c54f7bd5.jpg)
+
+
 To deploy to k8s, we created:
 - Four deployemts.  
 - One configmap.
