@@ -127,11 +127,6 @@ $ git push origin [name_of_your_new_branch]
 ```
 
 
-
-# Context Diagram
-A system context diagram (SCD) in engineering is a high level view of a system that defines the boundary between the system, or part of a system, and its environment, showing the entities that interact with it.
-<img src="https://user-images.githubusercontent.com/55021862/100797714-402f1e80-342b-11eb-8e30-ab00c8866afe.png" width="800" height="600"></img>
-
 ---
 # 1 - Codebase
 *One codebase tracked in revision control, many deploys*. <br />
