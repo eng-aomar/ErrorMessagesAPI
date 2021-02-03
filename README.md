@@ -134,8 +134,8 @@ $ git push origin [name_of_your_new_branch]
 To achieve the first factor, we created a repository for the backend API called: ErrorMessagesAPI.
 In this repository two branches have been created:
 
-1. **main** branch for the production.
-2. **dev** branch for the development.
+1. **master** branch for the production.
+2. **development** branch for the development.
 The source code has been tracked using the Github platform, and every team member contributes using pull requests
 mechanism. 
 ---
